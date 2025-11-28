@@ -37,11 +37,6 @@ services:
     ports:
       - 80:80 
 
-# docker compose up --build
-# docker compose -f docker-compose.yml exec backend flask db init
-# docker compose -f docker-compose.yml exec backend flask db migrate -m "added added_by field"
-# docker compose -f docker-compose.yml exec backend flask db upgrade
-# docker compose -f docker-compose.yml exec backend flask load_opinions
 
 # mkdir backend_static
 # cp -r /opinions_app/opinions_app/static/. /opinions_app/backend_static/static/
