@@ -1,0 +1,47 @@
+# docker-compose.yml
+# version: '3'
+
+volumes:
+  mysql_data:
+  static:
+
+services:
+  db:
+    image: mysql:8.0
+    env_file: .env
+    restart: always
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: rootpass  # Пароль для root
+    #   MYSQL_DATABASE: flask_db       # Имя базы данных
+    #   MYSQL_USER: admin              # Имя пользователя
+    #   MYSQL_PASSWORD: adminpass      # Пароль пользователя
+    volumes:
+      - mysql_data:/var/lib/mysql 
+  backend:
+    build: ./backend/
+    command: flask run --host=0.0.0.0
+    env_file: .env
+    volumes:
+      - static:/opinions_app/backend_static
+    depends_on:
+      - db
+    # environment:
+    #   FLASK_APP: opinions_app
+    #   DATABASE_URL: mysql+pymysql://admin:adminpass@db/flask_db
+
+  gateway:
+    build: ./gateway/
+    env_file: .env
+    volumes:
+      - static:/staticfiles/
+    ports:
+      - 80:80 
+
+# docker compose up --build
+# docker compose -f docker-compose.yml exec backend flask db init
+# docker compose -f docker-compose.yml exec backend flask db migrate -m "added added_by field"
+# docker compose -f docker-compose.yml exec backend flask db upgrade
+# docker compose -f docker-compose.yml exec backend flask load_opinions
+
+# mkdir backend_static
+# cp -r /opinions_app/opinions_app/static/. /opinions_app/backend_static/static/

@@ -5,7 +5,8 @@ from . import db
 class Opinion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), nullable=False)
-    text = db.Column(db.Text, unique=True, nullable=False)
+    # text = db.Column(db.Text, unique=True, nullable=False)
+    text = db.Column(db.String(1024), nullable=False)
     source = db.Column(db.String(256))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    added_by = db.Column(db.String(64)) 
+    added_by = db.Column(db.String(64))
