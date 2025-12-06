@@ -6,6 +6,11 @@
     <div class="row">
       <h1>{{ opinion.title }}</h1>
       <div class="col-12 col-lg-7 my-5">
+        {% if opinion.image_path %}
+          <img class="img-fluid mx-auto d-block" src="{{ url_for('media', filename=opinion.image_path) }}" width="600px" height="auto" alt="Иллюстрация к фильму"/>
+        {% else %}
+          <p>Картинка отсутствует.</p>
+        {% endif %}
         <p>{{ opinion.text }}</p>
         <p>
           Больше о фильме: 

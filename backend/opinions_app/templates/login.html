@@ -1,35 +1,25 @@
 {% extends "base.html" %}
-{% block title %} Добавить мнение о фильме {% endblock %}
+{% block title %} Авторизация пользователя {% endblock %}
 {% block content %}
 <main>
   <section class="container my-5">
     <div class="row">
-      <h1>Добавить мнение о фильме</h1>
+      <h1>Авторизация пользователя</h1>
       <div class="col-12 col-lg-7 my-5">
         <form method="POST" enctype="multipart/form-data" novalidate>
             {{ form.csrf_token }}
-            {{ form.title(class="form-control form-control-lg py-3 mb-3", placeholder=form.title.label.text) }}
-            {% if form.title.errors %}
+            {{ form.username(class="form-control form-control-lg py-3 mb-3", placeholder=form.username.label.text) }}
+            {% if form.username.errors %}
                 <p class="text-danger">
-                    {% for error in form.title.errors %}
+                    {% for error in form.username.errors %}
                         {{ error }}
                     {% endfor %}
                 </p>
             {% endif %}
-            {{ form.source(class="form-control form-control-lg py-3 mb-3", placeholder=form.source.label.text) }}
-            {{ form.text(class="form-control form-control-lg py-3 mb-3", placeholder=form.text.label.text, rows="3", cols="40")}}
-            {% if form.text.errors %}
+            {{ form.password(class="form-control form-control-lg py-3 mb-3", placeholder=form.password.label.text, rows="3", cols="40")}}
+            {% if form.password.errors %}
                 <p class="text-danger">
-                    {% for error in form.text.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </p>
-            {% endif %}
-            <!-- Добавляем поле для загрузки изображения -->
-            {{ form.image(class="form-control-file", accept="image/*") }}
-            {% if form.image.errors %}
-                <p class="text-danger">
-                    {% for error in form.image.errors %}
+                    {% for error in form.email.errors %}
                         {{ error }}
                     {% endfor %}
                 </p>

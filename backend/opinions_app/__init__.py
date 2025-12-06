@@ -6,11 +6,16 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from settings import Config
+from flask_mail import Mail, Message
+from flask_login import LoginManager
 
-# app = Flask(__name__, static_url_path='/static', static_folder='/opinions_app/opinions_app/static')
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+mail = Mail(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 from . import cli_commands, error_handlers, views
