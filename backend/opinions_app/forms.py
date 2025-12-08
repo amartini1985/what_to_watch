@@ -54,6 +54,7 @@ class LoginForm(FlaskForm):
 
 
 class ChangePasswordForm(FlaskForm):
+    '''Форма для изменения паролей'''
     username = StringField(
         'Введите ваш username',
         validators=[DataRequired(message='Обязательное поле'),
