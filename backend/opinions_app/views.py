@@ -3,20 +3,19 @@ import os
 from uuid import uuid4
 from werkzeug.utils import secure_filename
 
-
+from werkzeug.security import generate_password_hash,  check_password_hash
 from random import randrange
 
 from flask import abort, flash, redirect, render_template, url_for, send_from_directory, request, session, make_response, render_template_string
 from flask_mail import Message
-from flask_login import login_required
+from flask_login import login_required, login_user, logout_user, current_user
 
 from . import app, db, mail
-from .forms import OpinionForm, RegistrationForm, LoginForm
+from .forms import OpinionForm, RegistrationForm, LoginForm, ChangePasswordForm
 from .models import Opinion, User
 
 @app.route('/')
 def index_view():
-    print('1', session.items())
     quantity = Opinion.query.count()
     if not quantity:
         abort(500)
@@ -33,6 +32,9 @@ def add_opinion_view():
         if Opinion.query.filter_by(text=text).first() is not None:
             flash('Такое мнение уже было оставлено ранее!')
             return render_template('add_opinion.html', form=form)
+        if current_user.is_anonymous:
+            flash('Необходимо зарегистрироваться!')
+            return render_template('add_opinion.html', form=form)            
         # добавляем тут
         uploaded_image = form.image.data
         if uploaded_image:
@@ -43,13 +45,12 @@ def add_opinion_view():
             image_path = f'/media/{filename}'
         else:
             image_path = None
-
         opinion = Opinion(
-            title=form.title.data, 
-            text=text, 
+            title=form.title.data,
+            text=text,
             source=form.source.data,
-            image_path=image_path
-
+            image_path=image_path,
+            user=current_user.id
         )
         db.session.add(opinion)
         db.session.commit()
@@ -59,7 +60,8 @@ def add_opinion_view():
 @app.route('/opinions/<int:id>')
 def opinion_view(id):
     opinion = Opinion.query.get_or_404(id)
-    opinion.image_path = opinion.image_path.split('/')[2]
+    if opinion.image_path:
+        opinion.image_path = opinion.image_path.split('/')[2]
     return render_template('opinion.html', opinion=opinion) 
 
 @app.route('/media/<path:filename>')
@@ -82,9 +84,20 @@ def send_mail():
 def admin():
     return render_template('admin.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        # user = User.query.filter_by(username=form.username.data).first()
+        user = db.session.query(User).filter(User.username == form.username.data).first()
+        if not user:
+            flash('Такого пользователя не существует!')
+            return render_template('login.html', form=form)
+        if not user.check_password(form.password.data):
+            flash('Пароль неверный!')
+            return render_template('login.html', form=form)                      
+        login_user(user)
+        return redirect(url_for('index_view'))
     return render_template('login.html', form=form)
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -92,7 +105,7 @@ def registration():
     form = RegistrationForm()
     if form.validate_on_submit():
         if User.query.filter_by(username=form.username.data).first() or User.query.filter_by(email=form.email.data).first():
-            flash('такой пользователь уже существует!')
+            flash('Такой пользователь уже существует!')
             return render_template('registration.html', form=form)
         user = User(
             username=form.username.data,
@@ -103,3 +116,35 @@ def registration():
         db.session.commit()
         return redirect(url_for('login'))
     return render_template('registration.html', form=form)
+
+@app.route('/change_password', methods=['GET', 'POST', 'PATCH'])
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = db.session.query(User).filter(User.username == form.username.data).first()
+        if not user:
+            flash('Такой пользователь не существует!')
+            return render_template('change_password.html', form=form)
+        if check_password_hash(user.password_hash, form.oldpassword.data):
+            flash('вы ввели неверный пароль!')
+            return render_template('change_password.html', form=form)            
+        user.password_hash = generate_password_hash(form.newpassword.data)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('change_password.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.")
+    return redirect(url_for('login'))
+
+
+        # print('#' * 20, current_user.username)
+        # print('#' * 20, current_user.email)
+        # print('#' * 20, current_user.is_authenticated)   
+        # print('#' * 20, current_user.is_active)
+        # print('#' * 20, current_user.is_anonymous)   
+        # print('#' * 20, current_user.get_id())

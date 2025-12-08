@@ -36,7 +36,3 @@ services:
       - static:/staticfiles/
     ports:
       - 80:80 
-
-
-# mkdir backend_static
-# cp -r /opinions_app/opinions_app/static/. /opinions_app/backend_static/static/

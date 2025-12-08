@@ -15,6 +15,7 @@ class Opinion(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     added_by = db.Column(db.String(64))
     image_path = db.Column(db.String(256)) # Сюда
+    user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -28,9 +29,11 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(100), nullable=False)
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow,  onupdate=datetime.utcnow)
+    opinions = db.relationship('Opinion', backref='users', uselist=False)
+
 
     def set_password(self, password):
         return generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password=password)
+        return check_password_hash(self.password_hash, password)

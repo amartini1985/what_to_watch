@@ -12,16 +12,22 @@
           <p>Картинка отсутствует.</p>
         {% endif %}
         <p>{{ opinion.text }}</p>
+        <p>Автор: 
+          {% if opinion.user %}
+          <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ opinion.users.username }}</a>
+          {% else %} Автор неопределен.   
+          {% endif %}     
+        </p>
         <p>
           Больше о фильме: 
           {% if opinion.source %}
             <a href="{{ opinion.source }}">{{ opinion.source }}</a>
           {% else %} источник не указан {% endif %}
         </p>
-            <p>
-            Ссылка для друзей:
-            <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ url_for('opinion_view', id=opinion.id, _external=True) }}</a>
-            </p>
+        <p>
+          Ссылка для друзей:
+          <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ url_for('opinion_view', id=opinion.id, _external=True) }}</a>
+        </p>
       </div>
       <div class="col-12 col-lg-5">
         <img class="img-fluid mx-auto d-block" src="{{ url_for('static', filename='img/illustration.png') }}" alt="" />

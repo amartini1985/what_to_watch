@@ -19,6 +19,7 @@ class OpinionForm(FlaskForm):
     )
     submit = SubmitField('Добавить')
 
+
 class RegistrationForm(FlaskForm):
     username = StringField(
         'Введите ваш username',
@@ -37,6 +38,7 @@ class RegistrationForm(FlaskForm):
     )
     submit = SubmitField('Добавить')
 
+
 class LoginForm(FlaskForm):
     username = StringField(
         'Введите ваш username',
@@ -49,3 +51,22 @@ class LoginForm(FlaskForm):
                     Length(1, 128)]
     )
     submit = SubmitField('Авторизоваться')
+
+
+class ChangePasswordForm(FlaskForm):
+    username = StringField(
+        'Введите ваш username',
+        validators=[DataRequired(message='Обязательное поле'),
+                    Length(1, 128)]
+    )
+    oldpassword = StringField(
+        'Введите ваш старый password', 
+        validators=[DataRequired(message='Обязательное поле'), 
+                    Length(1, 128)]
+    )
+    newpassword = StringField(
+        'Введите ваш новый password', 
+        validators=[DataRequired(message='Обязательное поле'), 
+                    Length(1, 128)]
+    )
+    submit = SubmitField('Сменить пароль')
