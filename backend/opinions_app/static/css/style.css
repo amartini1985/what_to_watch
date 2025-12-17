@@ -53,7 +53,7 @@ textarea {
 }
 
 .button {
-    background-color: #3BBEBE;
+    background-color: #071919;
     border-radius: 20px;
     color: #FFF;
     font-size: 20px;
@@ -76,4 +76,37 @@ textarea {
     .navbar-brand {
         margin: 0 auto;
     }
+}
+
+.rating {
+    font-size: 56px; /* Размер звезд */
+}
+
+.rating .filled-star {
+    content: "\2605"; /* Заполненная звезда */
+    color: gold;      /* Цвет звезд */
+}
+
+.rating .empty-star {
+    color: gray;     /* Цвет пустой звезды */
+}
+
+.review {
+    font-size: 20px;
+    color: rgb(6, 6, 117);
+}
+
+.review_count {
+    font-size: 30px;
+    color: rgb(0, 0, 0);
+}
+
+.right-border {
+    border-left: 1px solid #212020; /* Черта слева, тонкая сероватая граница */
+    padding-left: 15px;           /* Небольшой отступ слева */
+}
+
+.link-btn {
+    display: inline-block; /* Даем элементам блочное поведение */
+    margin-right: 15px; /* Расстояние справа */
 }

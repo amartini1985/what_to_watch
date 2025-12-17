@@ -1,0 +1,50 @@
+{% extends "base.html" %} 
+{% block title %}Список всех фильмов{%endblock %} 
+{% block content %}
+<main>
+  {% import "includes/macros.html" as  macros %}   
+  <section class="container my-5">
+    {% for opinion in opinions %}
+        <div class="row">
+        <h1>{{ opinion.title }}</h1>
+        {%- set max_rating = 5 %}
+
+        <div class="rating col-12 col-lg-7 my-5">
+            {% for i in range(opinion.rating if opinion.rating else 0) %}
+            <span class="filled-star">★</span><!-- три заполненные звезды -->
+            {% endfor %}
+            {% for i in range(max_rating - (opinion.rating if opinion.rating else 0)) %}
+            <span class="filled-star">☆</span><!-- три заполненные звезды -->
+            {% endfor %}
+            {{ macros.reviews_edit(opinion.reviews.count()) }}
+        </div>
+        <div class="col-12 col-lg-7 my-5">
+            <p>{{ opinion.text }}</p>
+            <p>Автор: 
+            {% if opinion.user %}
+            <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ opinion.users.username }}</a>
+            {% else %} Автор неопределен.   
+            {% endif %}     
+            </p>
+            <p>
+            Больше о фильме: 
+            {% if opinion.source %}
+                <a href="{{ opinion.source }}">{{ opinion.source }}</a>
+            {% else %} источник не указан {% endif %}
+            </p>
+            <p>
+            Ссылка для друзей:
+            <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ url_for('opinion_view', id=opinion.id, _external=True) }}</a>
+            </p>
+        </div>
+        <div class="col-12 col-lg-5">
+            {% if opinion.image_path %}
+            <img class="img-fluid mx-auto d-block" src="{{ url_for('media', filename=opinion.image_path) }}" width="600px" height="auto" alt="Иллюстрация к фильму"/>
+            {% endif %}
+        </div>
+        </div>
+        <hr>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

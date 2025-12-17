@@ -1,0 +1,15 @@
+       {% for review in opinion.reviews %}
+        <p>
+          От пользователя: <span class="review">{{ review.users.username }} </span>
+        </p>
+        <p>
+          Дата публикации: <span class="review">{{ review.pub_date.strftime('%d %B %Y, %H:%M') }}</span>
+        </p>
+        <p>
+          <i>{{ review.text }}</i>
+        </p>
+        <p>
+          Оценка пользователя: {{ review.rating }}
+        </p>
+        <hr>
+      {% endfor %}

@@ -1,0 +1,9 @@
+    {% macro reviews_edit(value) %}
+        {% if value == 0 or value > 5 %}
+            <span class="review_count">({{ value }} отзывов)</span>
+        {% elif value == 1 %}
+            <span class="review_count">({{ value }} отзыв)</span>
+        {% else %}
+            <span class="review_count">({{ value }} отзыва)</span>
+        {% endif %}
+    {% endmacro %}
