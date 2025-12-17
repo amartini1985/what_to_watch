@@ -1,6 +1,6 @@
 # what_to_watch/opinions_app.py
 
-from flask import render_template, render_template_string
+from flask import render_template
 
 from . import app, db
 
@@ -12,26 +12,11 @@ def internal_error(error):
     # В таких случаях можно откатить изменения, незафиксированные в БД,
     # чтобы в базу не записалось ничего лишнего.
     db.session.rollback()
-    # Пользователю вернётся страница, сгенерированная на основе шаблона 500.html.
+    # Пользователю вернётся страница, сгенерированная на основе 500.html.
     # Этого шаблона пока нет, но сейчас вы его тоже создадите.
     # Пользователь получит и код HTTP-ответа 500.
-    return render_template('500.html'), 500
-
-@app.errorhandler(401)
-def internal_error(error):
-    # Ошибка 500 возникает в нештатных ситуациях на сервере. 
-    # Например, провалилась валидация данных.
-    # В таких случаях можно откатить изменения, незафиксированные в БД,
-    # чтобы в базу не записалось ничего лишнего.
-    db.session.rollback()
-    # Пользователю вернётся страница, сгенерированная на основе шаблона 500.html.
-    # Этого шаблона пока нет, но сейчас вы его тоже создадите.
-    # Пользователь получит и код HTTP-ответа 500.
-    return render_template_string('чао'), 500
-
+    return render_template('errors/500.html'), 500
 
 @app.errorhandler(404)
 def page_not_found(error):
-    # При ошибке 404 в качестве ответа вернётся страница, созданная
-    # на основе шаблона 404.html и код HTTP-ответа 404.
-    return render_template('404.html'), 404
+    return render_template('errors/404.html'), 404

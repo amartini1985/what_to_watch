@@ -1,0 +1,83 @@
+{% extends "base.html" %} 
+{% block title %}Мнение о фильме # {{ opinion.id }}{%endblock %} 
+{% block content %}
+<main>
+  <section class="container my-5">
+    <div class="row">
+      <div class="col-12 col-lg-7 ">
+      <h1 class="text-center">{{ opinion.title }}</h1>
+      {%- set max_rating = 5 %}
+
+      <div class="rating text-center">
+        {% for i in range(rating | int if rating else 0) %}
+          <span class="filled-star">★</span><!-- три заполненные звезды -->
+        {% endfor %}
+        {% for i in range(max_rating - (rating | int if rating else 0)) %}
+          <span class="filled-star">☆</span><!-- три заполненные звезды -->
+        {% endfor %}
+          <span class="review_count">({{ opinion.reviews.count() }} отзывов)</span>
+      </div>
+        {% if opinion.image_path %}
+          <img class="img-fluid mx-auto d-block mb-3" src="{{ url_for('media', filename=opinion.image_path) }}" width="600px" height="auto" alt="Иллюстрация к фильму"/>
+        {% else %}
+          <p>Картинка отсутствует.</p>
+        {% endif %}
+        <p>{{ opinion.text }}</p>
+        <p>Автор: 
+          {% if opinion.user %}
+          <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}">{{ opinion.users.username }}</a>
+          {% else %} Автор неопределен.   
+          {% endif %}     
+        </p>
+        <p>
+          Больше о фильме: 
+          {% if opinion.source %}
+            <a href="{{ opinion.source }}" class="review">{{ opinion.source }}</a>
+          {% else %} источник не указан {% endif %}
+        </p>
+        <p>
+          Ссылка для друзей:
+          <a href="{{ url_for('opinion_view', id=opinion.id, _external=True) }}" class="review">{{ url_for('opinion_view', id=opinion.id, _external=True) }}</a>
+        </p>
+        {% if current_user.username and opinion.users.username == current_user.username and '/delete' not in request.path %}
+          <a href="{{ url_for('opinion_view_edit', id=opinion.id, _external=True) }}" class="link-btn review"> Редактировать </a>
+          <a href="{{ url_for('opinion_view_delete', id=opinion.id, _external=True) }}" class="link-btn review"> Удалить </a>
+        {% elif current_user.username and opinion.users.username == current_user.username and '/delete' in request.path %}
+          <form method="POST" action="{{ url_for('opinion_view_delete', id=opinion.id, _external=True) }}">
+            <button type="submit" class="btn btn-primary">Удалить</button>
+          </form>
+        {% endif %}
+        <hr>
+        {% if '/delete' not in request.path and current_user.username %}
+          <form method="POST" enctype="multipart/form-data" novalidate>
+              {{ form.csrf_token }}
+              {{ form.text(class="form-control form-control-lg py-3 mb-3", placeholder=form.text.label.text, rows="3", cols="40")}}
+              {% if form.text.errors %}
+                  <p class="text-danger">
+                      {% for error in form.text.errors %}
+                          {{ error }}
+                      {% endfor %}
+                  </p>
+              {% endif %}
+              {{ form.submit(class="btn btn-primary px-5 py-3 mt-3") }}
+          </form>
+          {% endif %}
+        <p class="py-3 mb-3">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </p>
+      </div>
+      <div class="col-12 col-lg-5 right-border">
+        <h1 class="text-center">Отзывы:</h1>
+        <p></p>
+        {% include "includes/comments.html" %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

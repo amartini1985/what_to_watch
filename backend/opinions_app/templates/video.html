@@ -1,0 +1,14 @@
+{% extends "base.html" %} 
+{% block title %}Видео# {% endblock %} 
+{% block content %}
+<main>
+  <section class="container my-5">
+    <div class="row">
+        <video controls width="640" height="360">
+            <source src="{{ url_for('media', filename='v1.mp4') }}" type="video/mp4">
+            Ваше устройство не поддерживает HTML5 video.
+        </video>
+    </div>
+  </section>
+</main>
+{% endblock %}
